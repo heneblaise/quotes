@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Status Quotes</title>
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"> -->
 
 <style>
 :root{
@@ -12,6 +13,11 @@
   --text:#e2e8f0;
   --accent:#38bdf8;
   --danger:#ef4444;
+}
+*{
+  outline: none;
+  -webkit-tap-highlight-color: transparent; 
+  user-select: none; /* Prevents text highlight when tapping */
 }
 
 body{
@@ -113,7 +119,7 @@ button{
   display:flex;
   justify-content:center;
   gap:10px;
-  margin-top:15px;
+  margin:15px 0px;
 }
 
 .nav-buttons button{
@@ -126,9 +132,114 @@ button{
   width: 5rem;
 }
 
+
+
+
+
+
+
+
+
+ /* About section */
+    .about-section{width: 700px}
+    .about-section, 
+    .related-section {
+      margin: 10px;
+      text-align: left;
+    }
+    .about-header, 
+    .related-header {
+    background: rgba(255, 255, 255, 0.1);
+      padding: 15px 20px;
+      border-radius: 15px;
+      cursor: pointer;
+      font-size: 1.4rem;
+      font-weight: bold;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background 0.3s ease;
+    }
+    .about-header:hover,
+    .related-header:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+    .arrow,
+    .arow {
+      transition: transform 0.3s ease;
+    }
+    .arrow.rotate,
+    .arow.rotate {
+      transform: rotate(180deg);
+    }
+    .about-content, 
+    .related-content {
+      max-height: 0;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 15px;
+      padding: 0px 20px;
+      line-height: 1.6;
+      transition: max-height 0.5s ease, padding 0.3s ease;
+    }
+    .about-content.open, 
+    .related-content.open {
+      max-height: 300px;
+      padding: 5px 20px;
+    }
+
+
+.contact-section {
+  margin: 5px auto;
+  padding: 0px 3px 5px 3px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  width: 320px;
+  text-align: center;
+}
+
+.contact-title {
+  font-size: 1.5em;
+  font-weight: bold;
+  margin: 5px;
+  text-align: center;
+}
+
+.contact-section h4 {
+  margin: 0px auto 15px;
+  color: gold;
+}
+
+.contact-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 10px;
+}
+
+.contact-info {
+  font-weight: bold;
+  color: #fff;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.contact-info:hover {
+ color: var(--accent);
+}
+
+
+
+
+
+
+
+
+
+
 .footer{
   margin-top:25px;
-  font-size:12px;
+  font-size:16px;
   text-align:center;
   opacity:0.7;
 }
@@ -166,6 +277,52 @@ button{
   <button id="prevBtn">Prev</button>
   <button id="nextBtn">Next</button>
 </div>
+
+
+
+
+
+<!-- Related sites Section -->
+    <div class="related-section">
+      <div class="related-header" onclick="toggleRelated()">
+      Our Projects 
+        <span class="arow" id="arow">▼</span>
+      </div>
+      <div class="related-content" id="relatedContent">
+        <h3 style="text-align: center;
+        margin: 5px 0px 0px;
+        color: gold;"> 
+        Access our other sites </h3>
+
+        <p style="margin-top: 0px;">
+           👉<strong> Villian quotes </strong>. <br>
+            A collection of the greatest villain quotes across Movies, TV Series, Animes & More. 
+             <a href="#" style="color: gold;"> Click here</a>
+        </p>
+
+      </div>
+    </div>
+
+
+
+
+
+<!-- contact section -->
+
+<div class="contact-section">
+  <h2 class="contact-title">Contact us</h2> 
+  <h4> Available for all you Web design deals 🤝 </h4>
+  
+  <div class="contact-row">
+    <a href="https://wa.me/237654177854" class="contact-info left">
+      <i class="fab fa-whatsapp"></i>
+      654-177-854</a> 
+    <span style="margin: 0px 3px">  |  </span>
+    <a href="mailto:henepapah23@gmail.com" class="contact-info right"> ✉️ HB@gmail.com</a>
+  </div>
+</div>
+
+
 
 <div class="footer">
 © 2026 Status Quotes | Designed by HB
@@ -306,6 +463,22 @@ quoteBox.addEventListener("touchend", e=>{
   if(startX - endX > 50) nextBtn.click();
   if(endX - startX > 50) prevBtn.click();
 });
+
+
+function toggleAbout() {
+      const content = document.getElementById("aboutContent");
+      const arrow = document.getElementById("arrow");
+      content.classList.toggle("open");
+      arrow.classList.toggle("rotate");
+    }
+    
+    function toggleRelated() {
+      const content = document.getElementById("relatedContent");
+      const arrow = document.getElementById("arow");
+      content.classList.toggle("open");
+      arrow.classList.toggle("rotate");
+    }
+
 
 </script>
 </body>
