@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Status Quotes</title>
+
+<style>
+:root{
+  --bg:#0f172a;
+  --card:#1e293b;
+  --text:#e2e8f0;
+  --accent:#38bdf8;
+  --danger:#ef4444;
+}
+
+body{
+  margin:0;
+  font-family:'Segoe UI',sans-serif;
+  background:linear-gradient(180deg,#0f172a,#020617);
+  color:var(--text);
+  display:flex;
+  justify-content:center;
+}
+
+.container{
+  max-width:420px;
+  width:100%;
+  padding:16px;
+}
+
+h1{
+  text-align:center;
+  font-weight:600;
+}
+
+/* Custom dropdown */
+.select-wrapper{
+  position:relative;
+  margin-top:10px;
+}
+
+select{
+  width:100%;
+  padding:12px;
+  border-radius:12px;
+  background:var(--card);
+  color:var(--text);
+  border:none;
+  appearance:none;
+  font-size:14px;
+}
+
+.select-wrapper::after{
+  content:"▼";
+  position:absolute;
+  right:12px;
+  top:50%;
+  transform:translateY(-50%);
+  pointer-events:none;
+  color:#94a3b8;
+}
+
+.quote-box{
+  background:var(--card);
+  padding:25px 20px;
+  border-radius:20px;
+  text-align:center;
+  min-height:140px;
+  margin-top:15px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.3);
+}
+
+#quoteText{
+  font-size:18px;
+  line-height:1.5;
+}
+
+.actions{
+  display:flex;
+  justify-content:space-between;
+  margin-top:15px;
+}
+
+button{
+  cursor:pointer;
+  border:none;
+  border-radius:10px;
+  padding:8px 12px;
+  font-size:14px;
+}
+
+#shareBtn{
+  background:var(--accent);
+  color:#000;
+}
+
+.favorite{
+  background:transparent;
+  font-size:22px;
+}
+
+.favorite span{
+  color:#94a3b8;
+  transition:0.3s;
+}
+
+.favorite.active span{
+  color:var(--danger);
+}
+
+.nav-buttons{
+  display:flex;
+  justify-content:center;
+  gap:10px;
+  margin-top:15px;
+}
+
+.nav-buttons button{
+  background:#334155;
+  color:white;
+}
+
+.footer{
+  margin-top:25px;
+  font-size:12px;
+  text-align:center;
+  opacity:0.7;
+}
+
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<h1>Status Quotes</h1>
+
+<div class="select-wrapper">
+<select id="category">
+  <option value="all">All</option>
+  <option value="motivation">Motivation</option>
+  <option value="love">Love</option>
+  <option value="success">Success</option>
+  <option value="life">Life</option>
+  <option value="happiness">Happiness</option>
+  <option value="favorites">⭐ Favorites</option>
+</select>
+</div>
+
+<div class="quote-box" id="quoteBox">
+  <p id="quoteText"></p>
+
+  <div class="actions">
+    <button class="favorite" id="favBtn"><span>❤</span></button>
+    <button id="shareBtn">Share</button>
+  </div>
+</div>
+
+<div class="nav-buttons">
+  <button id="prevBtn">Prev</button>
+  <button id="nextBtn">Next</button>
+</div>
+
+<div class="footer">
+© 2026 Status | Designed by HB
+</div>
+
+</div>
+
+<Script src="quotes.js"></Script>
+
+<script>
+
+// CENTRAL QUOTES STORAGE (EASY TO EDIT LATER)
+// const QUOTES = {
+//   motivation:[
+//     "Stay strong.",
+//     "Never give up.",
+//     "Push your limits."
+//   ],
+//   love:[
+//     "Love conquers all.",
+//     "You are enough.",
+//     "Love starts within you."
+//   ],
+//   success:[
+//     "Success is earned, not given.",
+//     "Work hard in silence.",
+//     "Dream big, act bigger."
+//   ],
+//   life:[
+//     "Life is what you make it.",
+//     "Enjoy every moment.",
+//     "Live with purpose."
+//   ],
+//   happiness:[
+//     "Happiness is a choice.",
+//     "Smile more often.",
+//     "Peace begins with you."
+//   ]
+// };
+
+// Convert to flat structure
+function getAllQuotes(){
+  let arr = [];
+  for(let cat in QUOTES){
+    QUOTES[cat].forEach(q=>{
+      arr.push({text:q, category:cat});
+    });
+  }
+  return arr;
+}
+
+let quotes = getAllQuotes();
+let filtered = [...quotes];
+let index = Math.floor(Math.random()*quotes.length);
+
+const quoteText = document.getElementById("quoteText");
+const favBtn = document.getElementById("favBtn");
+
+function getFavorites(){
+  return JSON.parse(localStorage.getItem("favs")||"[]");
+}
+
+function showQuote(){
+  if(filtered.length === 0){
+    quoteText.textContent = "No quotes here yet.";
+    return;
+  }
+
+  const q = filtered[index];
+  quoteText.textContent = q.text;
+
+  const favs = getFavorites();
+  favBtn.classList.toggle("active", favs.includes(q.text));
+}
+
+showQuote();
+
+nextBtn.onclick = ()=>{
+  index = (index+1)%filtered.length;
+  showQuote();
+};
+
+prevBtn.onclick = ()=>{
+  index = (index-1+filtered.length)%filtered.length;
+  showQuote();
+};
+
+category.onchange = (e)=>{
+  const value = e.target.value;
+
+  if(value === "favorites"){
+    const favs = getFavorites();
+    filtered = quotes.filter(q=>favs.includes(q.text));
+  } else if(value === "all"){
+    filtered = quotes;
+  } else {
+    filtered = quotes.filter(q=>q.category===value);
+  }
+
+  index = 0;
+  showQuote();
+};
+
+favBtn.onclick = ()=>{
+  const q = filtered[index]?.text;
+  if(!q) return;
+
+  let favs = getFavorites();
+
+  if(favs.includes(q)){
+    favs = favs.filter(f=>f!==q);
+  } else {
+    favs.push(q);
+  }
+
+  localStorage.setItem("favs", JSON.stringify(favs));
+  showQuote();
+};
+
+shareBtn.onclick = async ()=>{
+  const text = quoteText.textContent;
+
+  if(navigator.share){
+    navigator.share({text});
+  } else {
+    navigator.clipboard.writeText(text);
+    alert("Copied");
+  }
+};
+
+let startX = 0;
+quoteBox.addEventListener("touchstart", e=>{
+  startX = e.touches[0].clientX;
+});
+
+quoteBox.addEventListener("touchend", e=>{
+  let endX = e.changedTouches[0].clientX;
+  if(startX - endX > 50) nextBtn.click();
+  if(endX - startX > 50) prevBtn.click();
+});
+
+</script>
+</body>
+</html>
