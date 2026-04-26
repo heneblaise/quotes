@@ -474,12 +474,67 @@ favBtn.onclick = ()=>{
 shareBtn.onclick = async ()=>{
   const text = quoteText.textContent;
 
-  if(navigator.share){
-    navigator.share({text});
-  } else {
-    navigator.clipboard.writeText(text);
-    alert("Copied");
+  // Create canvas
+  const canvas = document.createElement("canvas");
+  canvas.width = 600;
+  canvas.height = 400;
+  const ctx = canvas.getContext("2d");
+
+  // Background
+  ctx.fillStyle = "#1e293b";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // Text style
+  ctx.fillStyle = "#e2e8f0";
+  ctx.font = "20px Segoe UI";
+  ctx.textAlign = "center";
+
+  // Wrap text function
+  function wrapText(text, x, y, maxWidth, lineHeight) {
+    const words = text.split(" ");
+    let line = "";
+
+    for (let i = 0; i < words.length; i++) {
+      const testLine = line + words[i] + " ";
+      const testWidth = ctx.measureText(testLine).width;
+
+      if (testWidth > maxWidth && i > 0) {
+        ctx.fillText(line, x, y);
+        line = words[i] + " ";
+        y += lineHeight;
+      } else {
+        line = testLine;
+      }
+    }
+    ctx.fillText(line, x, y);
   }
+
+  wrapText(text, canvas.width / 2, 180, 500, 28);
+
+  // Footer branding
+  ctx.fillStyle = "#38bdf8";
+  ctx.font = "14px Segoe UI";
+  ctx.fillText("Status Quotes", canvas.width / 2, 350);
+
+  // Convert to image
+  canvas.toBlob(async (blob) => {
+    const file = new File([blob], "quote.png", { type: "image/png" });
+
+    if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+      await navigator.share({
+        files: [file],
+        text: text
+      });
+    } else {
+      // fallback download
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "quote.png";
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+  });
 };
 
 let startX = 0;
